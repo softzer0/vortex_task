@@ -7,6 +7,7 @@ from pyhunter import PyHunter
 import clearbit
 from rest_framework import serializers
 from re import compile as re_compile
+
 from .models import User
 
 NAME_REGEX = re_compile(r'^\w+$')
@@ -73,4 +74,13 @@ class UserDetailsSerializer(serializers.ModelSerializer):
         model = User
         fields = ('email', 'first_name', 'last_name')
         read_only_fields = ('email',)
+
+    def __init__(self, *args, **kwargs):
+        kwargs.pop('fields', None)
+        without_email = kwargs.pop('without_email', None)
+        super().__init__(*args, **kwargs)
+        if without_email:
+            self.fields.pop('email')
+
+
 
