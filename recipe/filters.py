@@ -12,7 +12,7 @@ class OwnFilter(FilterSet):
 
 class RecipeFilter(OwnFilter):
     ingredients = NumericRangeFilter(label=_("Number of ingredients between"),
-                                           field_name='ingredients', method='filter_ingredients')
+                                     field_name='ingredients', method='filter_ingredients')
 
     def filter_ingredients(self, queryset, name, value):
         filters = {}
@@ -21,4 +21,3 @@ class RecipeFilter(OwnFilter):
         if value.stop:
             filters['ingredients_count__lte'] = value.stop
         return queryset.annotate(ingredients_count=Count('ingredients')).filter(**filters)
-
