@@ -70,6 +70,9 @@ class RegisterSerializer(serializers.ModelSerializer):
 
 
 class UserDetailsSerializer(serializers.ModelSerializer):
+    first_name = serializers.RegexField(NAME_REGEX, min_length=2, max_length=30)
+    last_name = serializers.RegexField(NAME_REGEX, min_length=2, max_length=30)
+
     class Meta:
         model = User
         fields = ('email', 'first_name', 'last_name')
@@ -81,6 +84,4 @@ class UserDetailsSerializer(serializers.ModelSerializer):
         super().__init__(*args, **kwargs)
         if without_email:
             self.fields.pop('email')
-
-
 

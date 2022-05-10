@@ -19,7 +19,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     filterset_class = RecipeFilter
 
 
-class IngredientViewSet(viewsets.ModelViewSet):
+class IngredientViewSet(generics.ListCreateAPIView, viewsets.GenericViewSet):
     serializer_class = serializers.IngredientSerializer
     queryset = models.Ingredient.objects.all()
     permission_classes = (IsOwnerOrReadOnly,)
@@ -33,7 +33,7 @@ class IngredientViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
 
-class RatingViewSet(generics.ListCreateAPIView, generics.RetrieveUpdateAPIView, viewsets.GenericViewSet):
+class RatingViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.RatingSerializer
     queryset = models.Rating.objects.all()
     permission_classes = (IsOwnerOrReadOnly,)

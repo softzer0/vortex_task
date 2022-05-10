@@ -21,3 +21,4 @@ class RecipeFilter(OwnFilter):
         if value.stop:
             filters['ingredients_count__lte'] = value.stop
         return queryset.annotate(ingredients_count=Count('ingredients')).filter(**filters)
+

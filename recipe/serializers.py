@@ -1,6 +1,7 @@
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
+from rest_framework.permissions import SAFE_METHODS
 from rest_framework.validators import UniqueTogetherValidator, UniqueValidator
 
 from user.serializers import UserDetailsSerializer
@@ -13,7 +14,7 @@ class SerializerWithUser(serializers.Serializer):
     def __init__(self, *args, **kwargs):
         kwargs.pop('fields', None)
         super().__init__(*args, **kwargs)
-        if self.context['request'].method in ('POST', 'PUT', 'PATCH'):
+        if self.context['request'].method not in SAFE_METHODS:
             self.fields['user'] = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
 
@@ -29,7 +30,13 @@ class RecipeSerializer(SerializerWithUser, serializers.ModelSerializer):
 class IngredientSerializer(SerializerWithUser, serializers.ModelSerializer):
     class Meta:
         model = models.Ingredient
-        fields = '__all__'
+        fields = ('user', 'name')
+
+    def __init__(self, *args, **kwargs):
+        kwargs.pop('fields', None)
+        super().__init__(*args, **kwargs)
+        if self.context['request'].method in SAFE_METHODS:
+            self.fields.pop('user')
 
     def validate(self, attrs):
         if 'name' in attrs:
